@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot - Primo Levi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animazione per lo sfondo sfumato */
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        body {
+            background: linear-gradient(-45deg, #1d4ed8, #ef4444, #3182ce, #eab308);
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+            font-family: 'Inter', sans-serif;
+            color: #1a202c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            align-items: center;
+            max-width: none;
+            width: 100%;
+            text-align: center;
+        }
+        .text-box, .chatbot-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 4px solid;
+            transition: transform 0.3s ease;
+        }
+        .text-box:hover, .chatbot-box:hover {
+            transform: translateY(-5px);
+        }
+        .text-box h1 {
+            color: #3182ce;
+        }
+        .chatbot-box {
+            width: 100%;
+            height: 100vh;
+            max-width: none;
+            border-image: linear-gradient(45deg, #eab308, #ef4444, #3182ce, #eab308) 1;
+            animation: border-animation 5s infinite;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        @keyframes border-animation {
+            0% { border-image-source: linear-gradient(45deg, #eab308, #ef4444, #3182ce, #eab308); }
+            25% { border-image-source: linear-gradient(135deg, #ef4444, #3182ce, #eab308, #ef4444); }
+            50% { border-image-source: linear-gradient(225deg, #3182ce, #eab308, #ef4444, #3182ce); }
+            75% { border-image-source: linear-gradient(315deg, #eab308, #ef4444, #3182ce, #eab308); }
+            100% { border-image-source: linear-gradient(45deg, #eab308, #ef4444, #3182ce, #eab308); }
+        }
+        .chatbot-window {
+            height: 90vh;
+            width: 90vw;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid;
+            border-image: linear-gradient(45deg, #3182ce, #63b3ed) 1;
+        }
+        .chatbot-header {
+            background: linear-gradient(90deg, #3182ce, #63b3ed);
+            color: white;
+            padding: 1.5rem;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .message-container {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        .bot-message {
+            background-color: #e2e8f0;
+            color: #1a202c;
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            max-width: 85%;
+            align-self: flex-start;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .user-message {
+            background-color: #3182ce;
+            color: white;
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            max-width: 85%;
+            align-self: flex-end;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .suggested-questions-container {
+            padding: 1rem;
+            border-top: 2px solid #e2e8f0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .suggested-question-button {
+            background-color: #cbd5e0;
+            border-radius: 24px;
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+        }
+        .suggested-question-button:hover {
+            background-color: #a0aec0;
+        }
+        /* Rotazione del logo a forma di quadrato */
+        .animated-logo {
+            animation: rotate 10s infinite linear;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chatbot-box">
+            <div class="chatbot-window">
+                <div class="chatbot-header flex justify-between items-center">
+                    <h2 class="text-xl font-semibold">Chatbot "Primo Levi"</h2>
+                </div>
+                <div id="chat-messages" class="chat-messages">
+                    <div class="message-container">
+                        <div class="bot-message">Ciao! Sono il chatbot informativo della Scuola "Primo Levi". Posso darti alcune informazioni tratte dal PTOF.</div>
+                    </div>
+                </div>
+                <div id="suggested-questions" class="suggested-questions-container">
+                    </div>
+                <div class="p-4 bg-white border-t-2 border-gray-200 flex items-center">
+                    <input type="text" id="chat-input" class="flex-1 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Scrivi una domanda...">
+                    <button id="send-button" class="ml-3 p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="text-box mt-8 md:mt-0 p-8 md:p-12 w-full md:max-w-4xl">
+            <h1 class="text-3xl md:text-4xl font-bold mb-6 text-center text-blue-600">Chatbot Fusion sulla scuola</h1>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 mb-8">
+                <img src="foto_chatbot.png" alt="Immagine di Seregno innevata" class="w-48 h-48 rounded-lg shadow-lg border-2 border-gray-800">
+                <p class="text-lg text-gray-700 leading-relaxed text-justify">
+                    Benvenuti nel chatbot della scuola Primo Levi di Seregno, Via Briantino 68. Il suo obiettivo è fornire un accesso immediato a informazioni essenziali, liberando il personale scolastico per compiti più complessi e garantendo a studenti e genitori di reperire rapidamente risposte a domande frequenti.
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 mb-8">
+                <img src="Levi.png" alt="Logo AI a forma di quadrato" class="w-24 h-24 shadow-lg border-2 border-gray-800 animated-logo">
+                <p class="text-lg text-gray-700 leading-relaxed text-justify">
+                    Questo chatbot è progettato per interrogare un file esterno contenente informazioni precise, che possono essere aggiornate in qualsiasi momento senza modificare la struttura della pagina. Ciò permette al chatbot di dare risposte pertinenti e di "ragionare" in base alle parole chiave contenute nelle vostre domande.
+                </p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+            const suggestedQuestionsContainer = document.getElementById('suggested-questions');
+            
+            // Dati del chatbot integrati direttamente per evitare errori di caricamento
+            const qaData = {
+                "orari di apertura della scuola": {
+                    "label": "Orari di apertura",
+                    "keywords": ["orari", "apertura", "quando apre", "quando chiude"],
+                    "answer": "La scuola è aperta fino alle ore 17:00."
+                },
+                "mezzi di trasporto pubblici": {
+                    "label": "Mezzi di trasporto",
+                    "keywords": ["trasporti", "autobus", "mezzi", "come arrivare"],
+                    "answer": "La scuola è raggiungibile tramite le linee di autotrasporto SILA (H208) e Brianza Trasporti (Z231, Z232, Z233, Z228), oltre che da diverse linee urbane."
+                },
+                "elaborazione del ptof": {
+                    "label": "PTOF",
+                    "keywords": ["ptof", "elaborato", "approvato", "piano formativo"],
+                    "answer": "Il Piano Triennale dell'Offerta Formativa (PTOF) è stato elaborato dal collegio dei docenti in data 10/12/2024 ed è stato approvato dal Consiglio di Istituto il 19/12/2024."
+                },
+                "corsi e indirizzi di studio": {
+                    "label": "Corsi di studio",
+                    "keywords": ["corsi", "indirizzi", "studio", "liceo", "tecnico"],
+                    "answer": "La nostra scuola offre un'ampia varietà di indirizzi, tra cui Liceo Scientifico, Liceo delle Scienze Umane e diversi indirizzi tecnici. Per maggiori dettagli, visita il nostro sito web."
+                }
+            };
+            
+            function createSuggestedButtons(data) {
+                const questions = Object.keys(data);
+                suggestedQuestionsContainer.innerHTML = '';
+                questions.forEach(q => {
+                    const button = document.createElement('button');
+                    button.classList.add('suggested-question-button');
+                    button.textContent = data[q].label || q;
+                    button.dataset.question = q;
+                    suggestedQuestionsContainer.appendChild(button);
+                });
+            }
+
+            function addMessage(text, sender) {
+                const messageContainer = document.createElement('div');
+                messageContainer.classList.add('message-container');
+                const messageBubble = document.createElement('div');
+                messageBubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageBubble.textContent = text;
+                messageContainer.appendChild(messageBubble);
+                chatMessages.appendChild(messageContainer);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function normalizeText(text) {
+                return text.toLowerCase().replace(/[^\w\s]/g, '').trim();
+            }
+
+            function findBestResponse(userMessage, data) {
+                const normalizedMessage = normalizeText(userMessage);
+                for (const key in data) {
+                    if (normalizeText(key) === normalizedMessage) {
+                        return data[key].answer;
+                    }
+                    // Aggiungi logica di "ragionamento" basata su parole chiave
+                    const keywords = data[key].keywords || [];
+                    for (const keyword of keywords) {
+                        if (normalizedMessage.includes(normalizeText(keyword))) {
+                            return data[key].answer;
+                        }
+                    }
+                }
+                return "Mi dispiace, per ora rispondo solo a domande predefinite o basate su parole chiave. Prova a cliccare su uno dei pulsanti qui sotto!";
+            }
+
+            function handleSendMessage() {
+                const userMessage = chatInput.value.trim();
+                if (userMessage === '') return;
+                addMessage(userMessage, 'user');
+                chatInput.value = '';
+                setTimeout(() => {
+                    const botResponse = findBestResponse(userMessage, qaData);
+                    addMessage(botResponse, 'bot');
+                }, 500);
+            }
+            
+            sendButton.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+            suggestedQuestionsContainer.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    const question = e.target.dataset.question;
+                    chatInput.value = question;
+                    handleSendMessage();
+                }
+            });
+            createSuggestedButtons(qaData);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventi Teatro - Primo Levi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1f2937;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Sfondo animato con palline */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(160, 199, 255, 0.5) 2px, transparent 2px),
+                              radial-gradient(circle, rgba(197, 222, 255, 0.5) 2px, transparent 2px);
+            background-size: 25px 25px, 35px 35px;
+            background-position: 0 0, 15px 15px;
+            animation: move-balls 20s linear infinite;
+            opacity: 0.8;
+            z-index: -1;
+        }
+        @keyframes move-balls {
+            from { background-position: 0 0, 15px 15px; }
+            to { background-position: 250px 250px, 350px 350px; }
+        }
+        
+        .header-bg {
+            background-color: #3b82f6;
+            background-image: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e5e7eb;
+        }
+        .table-custom {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-pulse-hover:hover {
+            animation: pulse-hover 1s infinite;
+        }
+        @keyframes pulse-hover {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .details-section {
+            display: none;
+            animation: fadeIn 1s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+        .details-section.active {
+            display: block;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 2rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            background-color: #1f2937;
+            border-radius: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 4.5px;
+            top: 1.25rem;
+            bottom: -2rem;
+            width: 1px;
+            background-color: #1f2937;
+        }
+        .table-info th, .table-info td {
+            padding: 1rem;
+            text-align: left;
+        }
+        .table-info thead {
+            background-color: #1f2937;
+            color: white;
+        }
+        .table-info tbody tr:nth-child(odd) {
+            background-color: #f3f4f6;
+        }
+        .table-info tbody tr:hover {
+            background-color: #e5e7eb;
+        }
+        .quote-box {
+            border-left: 5px solid #ff4500;
+            padding-left: 1rem;
+        }
+        .cast-container {
+            column-count: 1;
+        }
+        @media (min-width: 640px) {
+            .cast-container {
+                column-count: 2;
+            }
+        }
+        @media (min-width: 1024px) {
+            .cast-container {
+                column-count: 3;
+            }
+        }
+
+        /* CSS per lo slider e il modal */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slider-wrapper img {
+            width: 100%;
+            flex-shrink: 0;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 1rem;
+            z-index: 10;
+        }
+        .slider-nav button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .slider-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+    <header class="header-bg text-center text-white py-12 md:py-16 rounded-3xl shadow-xl mb-12 animate-pulse-hover">
+        <h1 class="text-4xl md:text-6xl font-black uppercase text-white">Eventi Teatro</h1>
+        <p class="mt-2 text-lg md:text-xl font-light">L'arte sul palcoscenico dell'ITSCG Primo Levi di Seregno</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto space-y-12 flex-grow">
+        
+        <!-- Welcome Section -->
+        <section class="card p-8 rounded-3xl shadow-lg text-center">
+            <h2 class="text-3xl font-bold mb-4 text-blue-800">Il Teatro a Scuola: Un Palcoscenico per la Vita</h2>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                L'ITSCG "Primo Levi" di Seregno è da sempre impegnato a promuovere l'arte e la cultura come strumenti di crescita e formazione. Il nostro corso di teatro, istituito in linea con il Decreto Ministeriale 19-2023, offre agli studenti un'opportunità unica per esplorare le proprie capacità espressive, superare le insicurezze e imparare a collaborare in modo creativo. Attraverso il gioco e la recitazione, gli studenti acquisiscono una maggiore consapevolezza di sé e del mondo che li circonda.
+            </p>
+        </section>
+
+        <!-- Sezione slider per le foto -->
+        <section class="card p-8 rounded-3xl shadow-lg text-center">
+            <h2 class="text-3xl font-bold mb-4 text-pink-600">Un Successo che fa Notizia!</h2>
+            <p class="text-gray-700 leading-relaxed text-lg mb-6">
+                Lo spettacolo "Freak Show" ha riscosso un grande successo, attirando l'attenzione della stampa locale. Articoli entusiasti sono stati pubblicati su importanti testate come Il Cittadino e Il Giornale di Seregno, a testimonianza del talento dei nostri studenti. Entra a far parte anche tu di questo mondo e diventa protagonista!
+            </p>
+            <div class="slider-container max-w-full mx-auto">
+                <div class="slider-wrapper" id="image-slider">
+                    <img src="foto2.jpg" alt="Articolo su Il Cittadino" class="cursor-pointer" onclick="openModal(this)">
+                    <img src="foto3.jpg" class="cursor-pointer" onclick="openModal(this)">
+                    <img src="foto4.jpg" onclick="openModal(this)">
+                </div>
+                <div class="slider-nav">
+                    <button id="prev-btn">&lt;</button>
+                    <button id="next-btn">&gt;</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animated Table -->
+        <section class="card p-8 rounded-3xl shadow-lg table-custom">
+            <h2 class="text-3xl font-bold mb-6 text-blue-800 text-center">Edizioni del Corso di Teatro</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse rounded-2xl overflow-hidden">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="p-4 uppercase font-bold">Anno Scolastico</th>
+                            <th class="p-4 uppercase font-bold">Stato</th>
+                            <th class="p-4 uppercase font-bold">Dettagli</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white border-b-2 border-gray-200 animate-pulse-hover cursor-pointer" onclick="showDetails('2024-2025')">
+                            <td class="p-4 font-semibold">A.S. 2024-2025</td>
+                            <td class="p-4 text-green-600 font-semibold">Completato</td>
+                            <td class="p-4">
+                                <span class="text-blue-600 hover:underline font-semibold">Scopri l'edizione "Freak Show" &rarr;</span>
+                            </td>
+                        </tr>
+                        <tr class="bg-white animate-pulse-hover">
+                            <td class="p-4 font-semibold">A.S. 2025-2026</td>
+                            <td class="p-4 text-yellow-600 font-semibold">In Corso di Realizzazione</td>
+                            <td class="p-4">
+                                <span class="text-gray-500 italic font-semibold">Presto online!</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sezione locandina e foto palcoscenico -->
+        <section class="card p-8 rounded-3xl shadow-lg text-center mt-12">
+            <h2 class="text-3xl font-bold mb-2 text-blue-800">Locandine Spettacolo</h2>
+            <p class="text-lg text-gray-600 mb-6">Anno scolastico 24-25</p>
+            <div class="flex justify-center items-center">
+                <img src="teatro1.jpg" alt="Locandina dello spettacolo 'Freak Show'" class="max-w-xs md:max-w-sm h-auto object-contain rounded-xl shadow-lg cursor-pointer" onclick="openModal(this)">
+            </div>
+        </section>
+
+        <!-- Dynamic Content Section -->
+        <section id="details-2024-2025" class="details-section card p-8 rounded-3xl shadow-lg mt-12">
+            <h2 class="text-3xl font-bold mb-6 text-orange-600">Dettagli Corso "Freak Show"</h2>
+            <div class="space-y-8">
+
+                <!-- Inviting Text for new students -->
+                <div class="p-6 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl shadow-md border border-purple-200">
+                    <h3 class="text-2xl font-bold mb-4 text-purple-800">Pronto a Salire sul Palco?</h3>
+                    <p class="text-gray-800 leading-relaxed text-lg">
+                        L'arte teatrale non è solo recitazione, è un viaggio alla scoperta di sé. Con il nostro corso, imparerai a esprimere le tue emozioni, a superare la timidezza e a lavorare in squadra. Ti aspettiamo per la prossima edizione del nostro spettacolo! Scopri come la magia del teatro può cambiare la tua vita e renderti protagonista.
+                    </p>
+                </div>
+                
+                <!-- Script Quotes -->
+                <div class="p-6 bg-orange-50 rounded-2xl shadow-inner border border-orange-200">
+                    <h3 class="text-2xl font-bold mb-4 text-orange-800">Frasi dal Copione</h3>
+                    <div class="space-y-4 text-lg italic text-gray-800">
+                        <div class="quote-box">
+                            <p>"Siamo stati una famiglia… vero?"</p>
+                            <p class="text-sm font-semibold not-italic text-gray-600">- Maria</p>
+                        </div>
+                        <div class="quote-box">
+                            <p>"Sì. Sempre."</p>
+                            <p class="text-sm font-semibold not-italic text-gray-600">- Taylor</p>
+                        </div>
+                        <div class="quote-box">
+                            <p>"E stato… bellissimo."</p>
+                            <p class="text-sm font-semibold not-italic text-gray-600">- Emily</p>
+                        </div>
+                        <div class="quote-box">
+                            <p>"Vi voglio bene. Freak."</p>
+                            <p class="text-sm font-semibold not-italic text-gray-600">- Ambra</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cast List with improved layout -->
+                <div class="p-6 bg-blue-50 rounded-2xl shadow-inner border border-blue-200">
+                    <h3 class="text-2xl font-bold mb-4 text-blue-800">Partecipanti A.S. 2024-2025</h3>
+                    <!-- Utilizzo di `column-count` per una visualizzazione più compatta e organizzata su schermi ampi -->
+                    <div class="cast-container text-gray-700 space-y-2">
+                        <div><strong class="font-bold">Emily:</strong> Maria</div>
+                        <div><strong class="font-bold">Ambra:</strong> Arianna</div>
+                        <div><strong class="font-bold">Claudio:</strong> Giacomo</div>
+                        <div><strong class="font-bold">Alfonso:</strong> Nicolò</div>
+                        <div><strong class="font-bold">Miley:</strong> Monica</div>
+                        <div><strong class="font-bold">Mimmo:</strong> Patrick</div>
+                        <div><strong class="font-bold">Alberto:</strong> Lorenzo</div>
+                        <div><strong class="font-bold">Roberto:</strong> Gabriele</div>
+                        <div><strong class="font-bold">Taylor:</strong> Camilla</div>
+                        <div><strong class="font-bold">Franco:</strong> Mattia</div>
+                        <div><strong class="font-bold">Edoardo:</strong> Francesco</div>
+                        <div><strong class="font-bold">Fausto:</strong> Erik</div>
+                        <div><strong class="font-bold">Fabiana:</strong> Gaia</div>
+                        <div><strong class="font-bold">Maria:</strong> Angelica</div>
+                    </div>
+                </div>
+
+                <!-- Foto del palcoscenico, ora più grande e adattabile -->
+                <div class="p-6 bg-gray-100 rounded-2xl border border-gray-300 flex justify-center items-center">
+                    <img src="foto1.jpg" alt="Placeholder per un'immagine del corso di teatro." class="rounded-xl shadow-lg w-full h-auto object-contain cursor-pointer" onclick="openModal(this)">
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">Informazioni generali</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Il Corso di Teatro, con una durata complessiva di 60 ore, si articola in 46 ore di lezione frontale e 14 ore dedicate alla preparazione e realizzazione dello spettacolo finale. Le lezioni si terranno presso l’Aula 6, piano terra dell’Istituto Primo Levi di Seregno. Si invita alla massima puntualità.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Calendario delle lezioni</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full table-info rounded-2xl overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th>N.</th>
+                                    <th>Data</th>
+                                    <th>Giorno</th>
+                                    <th>Orario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1</td><td>19/12/2024</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>2</td><td>09/01/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>3</td><td>10/01/2025</td><td>Venerdì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>4</td><td>16/01/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>5</td><td>17/01/2025</td><td>Venerdì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>6</td><td>23/01/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>7</td><td>24/01/2025</td><td>Venerdì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>8</td><td>30/01/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>9</td><td>31/01/2025</td><td>Venerdì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>10</td><td>06/02/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>11</td><td>13/02/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>12</td><td>20/02/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>13</td><td>27/02/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>14</td><td>05/03/2025</td><td>Lunedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>15</td><td>06/03/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>16</td><td>13/03/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>17</td><td>20/03/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>18</td><td>27/03/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>19</td><td>03/04/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>20</td><td>16/04/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>21</td><td>07/05/2025</td><td>Mercoledì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>22</td><td>08/05/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                                <tr><td>23</td><td>15/05/2025</td><td>Giovedì</td><td>15:00 - 17:00</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Prove e Spettacolo Finale</h3>
+                    <div class="space-y-4">
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl">Prove generali</h4>
+                            <p class="text-gray-700"><strong>Data:</strong> 24/05/2025</p>
+                            <p class="text-gray-700"><strong>Orario:</strong> 08:00 - 21:00</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl">Spettacolo</h4>
+                            <p class="text-gray-700"><strong>Data:</strong> 24/05/2025</p>
+                            <p class="text-gray-700"><strong>Orario:</strong> 21:00 - 23:00</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-bold text-xl">Sede dello Spettacolo</h4>
+                            <p class="text-gray-700"><strong>Nome Teatro:</strong> Teatro San Giulio</p>
+                            <p class="text-700"><strong>Indirizzo:</strong> Via C. Colombo, 20, 20825 Barlassina MB</p>
+                            <p class="text-gray-700"><strong>Località:</strong> Barlassina (MB)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Credits -->
+        <footer class="text-center text-gray-600 mt-12">
+            <p class="text-sm">
+                <strong>Esperto:</strong> Stefano Lo Iacono
+            </p>
+            <p class="text-sm">
+                <strong>Tutor:</strong> Prof. Giuseppe Borzumati
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- Modal per ingrandimento foto -->
+    <div id="image-modal" class="modal" onclick="closeModal()">
+        <span class="close-btn">&times;</span>
+        <img class="modal-content" id="modal-image" src="" alt="">
+    </div>
+
+    <script>
+        // Funzione per mostrare/nascondere la sezione dettagli
+        function showDetails(editionId) {
+            const detailsElement = document.getElementById(`details-${editionId}`);
+            if (detailsElement.classList.contains('active')) {
+                detailsElement.classList.remove('active');
+            } else {
+                // Nasconde tutte le sezioni dettagli
+                document.querySelectorAll('.details-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                // Mostra quella selezionata
+                detailsElement.classList.add('active');
+            }
+        }
+
+        // Logica per lo slider di immagini
+        const slider = document.getElementById('image-slider');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const images = slider.querySelectorAll('img');
+        let currentIndex = 0;
+
+        function updateSlider() {
+            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateSlider();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateSlider();
+        });
+
+        // Logica per il modal di ingrandimento
+        const modal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+
+        function openModal(imgElement) {
+            modal.classList.add('active');
+            modalImage.src = imgElement.src;
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+    </script>
+</body>
+</html>
+
+

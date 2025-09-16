@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primo Levi Seregno - Sito Web</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f0f4ff 0%, #d9e2ff 100%);
+        }
+
+        /* Animazioni di sfondo */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .animated-shape {
+            position: absolute;
+            background: rgba(147, 197, 253, 0.4);
+            border-radius: 50%;
+            animation: moveShape 15s linear infinite;
+        }
+
+        .animated-shape:nth-child(1) {
+            width: 150px;
+            height: 150px;
+            top: 10%;
+            left: 5%;
+            animation-duration: 20s;
+            animation-delay: -2s;
+        }
+
+        .animated-shape:nth-child(2) {
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            left: 70%;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+
+        .animated-shape:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            top: 80%;
+            left: 30%;
+            animation-duration: 25s;
+            animation-delay: -8s;
+        }
+
+        @keyframes moveShape {
+            0% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(10vw, 5vh) scale(1.1); }
+            50% { transform: translate(0, 10vh) scale(0.9); }
+            75% { transform: translate(-10vw, 5vh) scale(1.2); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* Animazione logo quadrato */
+        .animated-logo {
+            position: relative;
+            animation: rotateLogo 4s linear infinite;
+            border-radius: 1.5rem; /* angoli arrotondati */
+            overflow: hidden;
+        }
+
+        .animated-logo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .animated-logo::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            z-index: -1;
+            background: conic-gradient(#3b82f6, #60a5fa, #93c5fd, #bfdbfe, #3b82f6);
+            animation: animateBorder 3s linear infinite;
+        }
+
+        @keyframes animateBorder {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Chatbot animazione */
+        .chatbot-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .chatbot-logo {
+            cursor: pointer;
+            transition: transform 0.5s ease;
+        }
+
+        .chatbot-bubble {
+            display: none;
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 1.5rem 1.5rem 0 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            max-width: 250px;
+            text-align: right;
+            position: relative;
+        }
+
+        .chatbot-container:hover .chatbot-bubble {
+            display: block;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stili per il tag 'cut out' */
+        .text-cutout {
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased">
+
+    <div class="animated-bg">
+        <div class="animated-shape"></div>
+        <div class="animated-shape"></div>
+        <div class="animated-shape"></div>
+    </div>
+
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-white shadow-xl flex flex-col items-center justify-between p-6 z-10">
+            <div class="flex flex-col items-center w-full">
+                <a href="#" class="mb-8 block w-24 h-24 p-1 relative" onclick="showPage('home')">
+                    <div class="animated-logo absolute inset-0">
+                        <img src="Levi.png" alt="Logo Scuola" class="w-full h-full rounded-2xl shadow-lg">
+                    </div>
+                </a>
+                <nav class="w-full">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" class="nav-link block p-3 rounded-xl text-center font-medium transition-colors hover:bg-blue-100 hover:text-blue-600" data-page="home">
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link block p-3 rounded-xl text-center font-medium transition-colors hover:bg-blue-100 hover:text-blue-600" data-page="progetti">
+                                Progetti ed Eventi
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link block p-3 rounded-xl text-center font-medium transition-colors hover:bg-blue-100 hover:text-blue-600" data-page="openday">
+                                Open Day
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link block p-3 rounded-xl text-center font-medium transition-colors hover:bg-blue-100 hover:text-blue-600" data-page="contatti">
+                                Contatti
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link block p-3 rounded-xl text-center font-medium transition-colors hover:bg-blue-100 hover:text-blue-600" data-page="vita">
+                                Vita Studentesca
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link block p-3 rounded-xl text-center font-medium transition-colors hover:bg-blue-100 hover:text-blue-600" data-page="ptof">
+                                PTOF & Regolamenti
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mt-auto w-full text-center">
+                <a href="https://instagram.com" target="_blank" class="text-gray-500 hover:text-blue-600 transition-colors">
+                    <i class="fa-brands fa-instagram fa-2x"></i>
+                </a>
+                <p class="mt-2 text-sm text-gray-500">
+                    Seguici su Instagram
+                </p>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-8 lg:p-12 overflow-y-auto">
+            <section id="home" class="page-content fade-in">
+                <div class="flex flex-col lg:flex-row items-center justify-between bg-white rounded-3xl shadow-xl p-8 mb-8">
+                    <div class="lg:w-1/2">
+                        <h1 class="text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
+                            ITSCG PRIMO LEVI Facciamo Crescere <span class="text-cutout" style="background-image: linear-gradient(135deg, #1e3a8a, #3b82f6, #93c5fd);">Cultura</span>
+                        </h1>
+                        <p class="text-lg text-gray-600 mb-6">
+                            "ARHIVIO STORICO PRIMO LEVI" SEREGNO<br>
+                            ISTRUZIONE TECNICA E LICEALE
+                        </p>
+                        <a href="#" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-transform hover:scale-105" data-page="progetti">
+                            Scopri i nostri progetti
+                        </a>
+                    </div>
+                    <div class="lg:w-1/2 mt-8 lg:mt-0 lg:ml-8">
+                        <img src="scherma.jpeg" alt="Foto della scuola" class="w-full rounded-2xl shadow-xl transform rotate-3 scale-95 transition-transform hover:rotate-0 hover:scale-100">
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+                    <h2 class="text-3xl font-bold text-center mb-6">Innovazione e Flessibilità</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-blue-50 rounded-2xl p-6 shadow-md transition-all duration-300 hover:scale-105">
+                            <h3 class="font-bold text-2xl mb-2 text-blue-800">La Settimana Corta</h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                Presso l'Istituto Primo Levi, abbiamo adottato la settimana corta, una scelta organizzativa che prevede la concentrazione delle ore di lezione su cinque giorni, dal lunedì al venerdì. Questa decisione è stata presa per ottimizzare i tempi di apprendimento e per offrire agli studenti un fine settimana più lungo, permettendo loro di dedicarsi a hobby, sport e al riposo, fondamentali per il loro benessere psicofisico. L'organizzazione delle lezioni è stata attentamente studiata per garantire la qualità dell'insegnamento e il completo svolgimento dei programmi didattici.
+                            </p>
+                        </div>
+                        <div class="bg-blue-50 rounded-2xl p-6 shadow-md transition-all duration-300 hover:scale-105">
+                            <h3 class="font-bold text-2xl mb-2 text-blue-800">La Didattica a Distanza (DAD)</h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                L'Istituto ha saputo affrontare con successo le sfide imposte dalla pandemia, adottando rapidamente e in maniera efficace la Didattica a Distanza (DAD). Grazie a una solida infrastruttura tecnologica e alla formazione continua dei docenti, abbiamo garantito la continuità didattica e un'interazione costante con gli studenti, mantenendo un alto livello di coinvolgimento e partecipazione. La DAD ha dimostrato la flessibilità e la resilienza della nostra scuola e la sua capacità di adattarsi a scenari inattesi, trasformando la crisi in un'opportunità di innovazione.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+<section id="progetti" class="page-content hidden">
+    <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+        <h1 class="text-4xl font-bold mb-6 text-center">Tutti i Progetti e gli Eventi</h1>
+        <p class="text-center text-gray-600 mb-8">Scopri le iniziative che rendono la nostra scuola un luogo di crescita e innovazione.</p>
+
+        <h2 class="text-3xl font-bold text-center mb-6">Progetti in Evidenza</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-gray-50 rounded-2xl p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <h3 class="font-bold text-xl mb-2">Robotica</h3>
+                <p class="text-sm text-gray-500">Un'esperienza immersiva nel mondo dell'intelligenza artificiale e della robotica.</p>
+                <img src="https://placehold.co/400x300/4ade80/ffffff?text=Robotica" alt="Progetto Robotica" class="w-full h-40 object-cover rounded-xl mt-4">
+            </div>
+            <div class="bg-gray-50 rounded-2xl p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <h3 class="font-bold text-xl mb-2">Erasmus+</h3>
+                <p class="text-sm text-gray-500">Un'opportunità per studiare all'estero e conoscere nuove culture.</p>
+                <img src="https://placehold.co/400x300/fca5a5/ffffff?text=Erasmus" alt="Progetto Erasmus" class="w-full h-40 object-cover rounded-xl mt-4">
+            </div>
+            <a href="teatro.html" class="bg-gray-50 rounded-2xl p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl block">
+                <h3 class="font-bold text-xl mb-2">Corsi di Teatro</h3>
+                <p class="text-sm text-gray-500">Esprimi la tua creatività sul palco con il nostro corso di teatro.</p>
+                <img src="https://placehold.co/400x300/eab308/ffffff?text=Teatro" alt="Progetto Teatro" class="w-full h-40 object-cover rounded-xl mt-4">
+            </a>
+        </div>
+
+        <h2 class="text-3xl font-bold mt-10 mb-4 border-b-2 pb-2 border-blue-400">Collaborazioni con il Territorio</h2>
+        <div class="bg-blue-50 rounded-2xl shadow-inner p-6">
+            <p class="text-gray-700 leading-relaxed mb-4">
+                L'Istituto Primo Levi ha sempre mantenuto un forte legame con la comunità locale, collaborando attivamente con i media del territorio. Le nostre iniziative e i successi dei nostri studenti sono regolarmente riportati su testate locali come il Giornale di Seregno e Il Cittadino, garantendo la massima visibilità ai nostri progetti e rafforzando il nostro ruolo come punto di riferimento culturale.
+            </p>
+        </div>
+
+        <h2 class="text-3xl font-bold mt-10 mb-4 border-b-2 pb-2 border-blue-400">Progetto Teatro: L'Anima della Scena</h2>
+        <div class="flex flex-col md:flex-row items-center md:space-x-8">
+            <div class="md:w-1/2">
+                <p class="text-lg leading-relaxed text-justify mb-6">
+                    Il Progetto Teatro dell'Istituto Primo Levi non è un semplice laboratorio teatrale, ma una vera e propria scuola di vita. È uno spazio in cui gli studenti possono esprimere la propria creatività, superare le insicurezze e sviluppare competenze relazionali e comunicative fondamentali. Le attività spaziano dalla dizione alla recitazione, dalla scenografia alla gestione delle luci e dei suoni. Il progetto si distingue per la sua capacità di coinvolgere i ragazzi in tutte le fasi della produzione, dalla scrittura del copione alla messa in scena finale. Gli spettacoli non sono solo esibizioni, ma momenti di riflessione collettiva su temi di grande attualità, come la giustizia sociale, la tolleranza e la memoria storica. La passione e la dedizione delle docenti, in particolare delle referenti professoressa Elena La Martina e professoressa Elena La Crippa, rendono questo progetto un'esperienza indimenticabile per tutti i partecipanti.
+                </p>
+            </div>
+            <div class="md:w-1/2 mt-8 md:mt-0">
+                <img src="https://placehold.co/600x400/374151/d1d5db?text=Progetto+Teatro" alt="Progetto Teatro" class="w-full rounded-xl shadow-lg">
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-bold mt-10 mb-4 border-b-2 pb-2 border-blue-400">Progetto Eventi</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div>
+                <img src="https://placehold.co/600x400/4b5563/d1d5db?text=Evento+1" alt="Evento 1" class="rounded-xl shadow-lg mb-4">
+                <p class="text-lg leading-relaxed text-justify">
+                    Il Progetto Event dell'istituto Primo Levi è un'iniziativa dinamica e inclusiva volta a coinvolgere la comunità scolastica in attività che vanno oltre l'ordinario percorso didattico. Questi eventi, organizzati con cura e creatività, spaziano dalle celebrazioni di festività storiche, come la Giornata della Memoria, a incontri con esperti del mondo del lavoro e della cultura.
+                </p>
+            </div>
+            <div>
+                <img src="https://placehold.co/600x400/4b5563/d1d5db?text=Evento+2" alt="Evento 2" class="rounded-xl shadow-lg mb-4">
+                <p class="text-lg leading-relaxed text-justify">
+                    Attraverso l'organizzazione di conferenze, seminari e workshop, gli studenti hanno l'opportunità di approfondire argomenti specifici, sviluppare competenze trasversali e confrontarsi con realtà esterne. Tali eventi rappresentano un'occasione preziosa per applicare le conoscenze acquisite in classe, stimolando la loro curiosità e il loro spirito di iniziativa.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+            <section id="openday" class="page-content hidden">
+                <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+                    <h1 class="text-4xl font-bold mb-6 text-center">Open Day</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <img src="https://placehold.co/800x600/f9a8d4/ffffff?text=Open+Day" alt="Open Day" class="w-full rounded-2xl shadow-md mb-4">
+                            <h2 class="text-3xl font-bold mb-4">Partecipa al nostro prossimo Open Day!</h2>
+                            <p class="text-gray-600 leading-relaxed">
+                                Un'occasione imperdibile per scoprire i nostri corsi di studio, incontrare i docenti e gli studenti e immergerti nell'atmosfera della scuola. Potrai visitare i laboratori, assistere a dimostrazioni pratiche e chiedere tutte le informazioni di cui hai bisogno.
+                            </p>
+                        </div>
+                        <div>
+                            <div class="bg-blue-50 rounded-2xl p-6 mb-6">
+                                <h3 class="text-2xl font-semibold mb-2">Corsi di Studio</h3>
+                                <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                    <li>Liceo Scientifico</li>
+                                    <li>Liceo delle Scienze Umane</li>
+                                    <li>Istituto Tecnico Tecnologico</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 rounded-2xl p-6">
+                                <h3 class="text-2xl font-semibold mb-2">Regolamento Open Day</h3>
+                                <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                    <li>Prenotazione obbligatoria tramite il form.</li>
+                                    <li>L'accesso è consentito solo ai visitatori con biglietto.</li>
+                                    <li>Sono previste sessioni di domande e risposte con i docenti.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contatti" class="page-content hidden">
+                <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+                    <h1 class="text-4xl font-bold mb-6 text-center">Contatti e Risorse</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 rounded-2xl p-6 shadow-md">
+                            <h2 class="text-2xl font-semibold mb-4 flex items-center">
+                                <i class="fa-solid fa-address-card mr-3 text-blue-500"></i> Contatti Utili
+                            </h2>
+                            <p class="text-gray-700 mb-2"><strong>Indirizzo:</strong> Via Briantina, 68 - Seregno (MB)</p>
+                            <p class="text-gray-700 mb-2"><strong>Telefono:</strong> 0362 237061</p>
+                            <p class="text-gray-700 mb-2"><strong>Email:</strong> mbtd430001@istruzione.it</p>
+                            <hr class="my-6 border-blue-200">
+                            
+                            <h3 class="font-bold text-xl mb-3 flex items-center">
+                                <i class="fa-solid fa-user-tie mr-2 text-blue-500"></i> Presidenza
+                            </h3>
+                            <p class="text-gray-700 mb-4">
+                                Dirigente Scolastico: Prof. Massimo Paolo Mario Viganò
+                            </p>
+
+                            <h3 class="font-bold text-xl mb-3 flex items-center">
+                                <i class="fa-solid fa-user-group mr-2 text-blue-500"></i> Vicepresidenza
+                            </h3>
+                            <p class="text-gray-700 mb-2">
+                                Vicaria: Professoressa Elena La Marttina
+                            </p>
+                            <p class="text-gray-700 mb-2">
+                                Collaboratrice: Professoressa Elena Crippa
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-2xl p-6 shadow-md">
+                            <h2 class="text-2xl font-semibold mb-4 flex items-center">
+                                <i class="fa-solid fa-envelope mr-3 text-blue-500"></i> Modulo di Contatto
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                Compila il modulo qui sotto per inviare un messaggio alla segreteria della scuola.
+                            </p>
+                            <form>
+                                <div class="mb-4">
+                                    <label for="nome" class="block text-gray-700 font-medium mb-1">Nome e Cognome</label>
+                                    <input type="text" id="nome" name="nome" class="w-full p-2 border border-gray-300 rounded-md" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="email" class="block text-gray-700 font-medium mb-1">Indirizzo Email</label>
+                                    <input type="email" id="email" name="email" class="w-full p-2 border border-gray-300 rounded-md" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="telefono" class="block text-gray-700 font-medium mb-1">Numero di Telefono (Opzionale)</label>
+                                    <input type="tel" id="telefono" name="telefono" class="w-full p-2 border border-gray-300 rounded-md">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="oggetto" class="block text-gray-700 font-medium mb-1">Oggetto</label>
+                                    <input type="text" id="oggetto" name="oggetto" class="w-full p-2 border border-gray-300 rounded-md" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="messaggio" class="block text-gray-700 font-medium mb-1">Messaggio</label>
+                                    <textarea id="messaggio" name="messaggio" rows="5" class="w-full p-2 border border-gray-300 rounded-md" required></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-blue-600 transition-colors">
+                                    Invia
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="vita" class="page-content hidden">
+                <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+                    <h1 class="text-4xl font-bold mb-6 text-center">La Vita Studentesca</h1>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <img src="https://placehold.co/600x400/4b5563/d1d5db?text=Vita+Studentesca+1" alt="Vita Studentesca" class="rounded-xl shadow-lg mb-4">
+                            <p class="text-lg leading-relaxed text-justify">
+                                La vita studentesca all'Istituto Primo Levi è ricca di opportunità e iniziative che vanno oltre le lezioni frontali. La scuola promuove attivamente la partecipazione degli studenti a progetti, attività sportive e club di interesse, come il giornalino scolastico, il club di scacchi e le squadre sportive. Questi momenti sono fondamentali per la creazione di un senso di appartenenza e per lo sviluppo di amicizie durature.
+                            </p>
+                        </div>
+                        <div>
+                            <img src="https://placehold.co/600x400/4b5563/d1d5db?text=Vita+Studentesca+2" alt="Vita Studentesca 2" class="rounded-xl shadow-lg mb-4">
+                            <p class="text-lg leading-relaxed text-justify">
+                                Il Consiglio Studentesco è un organo vitale che rappresenta la voce degli studenti, promuovendo iniziative e collaborando con la dirigenza scolastica per migliorare l'ambiente di apprendimento. Eventi come le feste di fine anno, i tornei sportivi e le gite scolastiche arricchiscono l'esperienza formativa, trasformando la scuola non solo in un luogo di studio, ma in un vero e proprio centro di crescita personale e sociale.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ptof" class="page-content hidden">
+                <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+                    <h1 class="text-4xl font-bold mb-6 text-center">PTOF & Regolamenti</h1>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 rounded-2xl p-6 shadow-md">
+                            <h2 class="text-2xl font-semibold mb-4">Piano Triennale dell'Offerta Formativa (PTOF)</h2>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Il PTOF è il documento fondamentale e costitutivo dell'identità culturale e progettuale di ogni scuola. In esso vengono esplicitati la progettazione curricolare, extracurricolare, educativa e organizzativa che la scuola adotta nell'ambito della propria autonomia. Il documento è disponibile per la consultazione diretta.
+                            </p>
+                            <a href="https://example.com/ptof.pdf" target="_blank" class="text-blue-500 hover:underline transition-colors">
+                                Scarica il PTOF
+                            </a>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-6 shadow-md">
+                            <h2 class="text-2xl font-semibold mb-4">Regolamento d'Istituto</h2>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Il regolamento d'Istituto definisce le norme di comportamento e le procedure per garantire un ambiente scolastico sereno e produttivo. Include il regolamento di disciplina, le linee guida per la sicurezza e altre disposizioni importanti.
+                            </p>
+                            <a href="https://example.com/regolamento.pdf" target="_blank" class="text-blue-500 hover:underline transition-colors">
+                                Scarica il Regolamento
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <div class="chatbot-container">
+            <div class="chatbot-bubble">
+                Ciao, sono il chatbot della scuola di Seregno. Cliccami pure se hai bisogno di qualsiasi informazione!!
+            </div>
+            <a href="chatbot.html">
+                <img src="foto_chatbot.png" alt="Chatbot" class="chatbot-logo w-16 h-16 rounded-full shadow-lg">
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const pages = document.querySelectorAll('.page-content');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('fade-in');
+            });
+            const currentPage = document.getElementById(pageId);
+            currentPage.classList.remove('hidden');
+            currentPage.classList.add('fade-in');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('bg-blue-500', 'text-white');
+                link.classList.add('text-gray-800');
+            });
+            const activeLink = document.querySelector(`[data-page="${pageId}"]`);
+            activeLink.classList.add('bg-blue-500', 'text-white');
+            activeLink.classList.remove('text-gray-800');
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(e.target.dataset.page);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('home');
+        });
+    </script>
+
+</body>
+</html>
